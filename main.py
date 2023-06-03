@@ -113,7 +113,20 @@ async def show_questions_command(update: Update, context: ContextTypes.DEFAULT_T
 async def answer_question(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
     if user.id in ADMINS:
-        await update.message.reply_text("Введите ID пользователя, ID сообщения и текст ответа")
+        outp = ""
+        print(USERS_QUESTIONS)
+        if len(USERS_QUESTIONS) != 0:
+            for user_id, messages in USERS_QUESTIONS.items():
+                for message_id, message in messages.items():
+                    outp += 'ID пользователя и ID сообщения: ' + str(user_id) + ' ' + str(
+                        message_id) + '\nВопрос: ' + message + "\n"
+                    outp += '\n'
+            await update.message.reply_text(outp)
+            await update.message.reply_text("Введите ID пользователя, ID сообщения и текст ответа")
+        else:
+            await update.message.reply_text('Вопросов нет :)')
+    else:
+        await update.message.reply_text("Комманда только для администратора")
     context.user_data['prev_command'] = 'admin_answ_q'
 
 
@@ -139,10 +152,23 @@ async def show_podcasts_command(update: Update, context: ContextTypes.DEFAULT_TY
 async def answer_podcast(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
     if user.id in ADMINS:
+        print(USERS_PODCASTS)
+        if len(USERS_PODCASTS) != 0:
+            await bot.sendMessage(chat_id=user.id, text='Подкасты на рассмотрении:')
+            for user_id, messages in USERS_PODCASTS.items():
+                for message_id, message in messages.items():
+                    outp = 'ID пользователя и ID сообщения: ' + str(user_id) + ' ' + str(
+                        message_id) + '\nИмя: ' + message
+                    await bot.sendMessage(chat_id=user.id, text=outp)
+                    await bot.forward_message(chat_id=user.id, from_chat_id=user_id, message_id=message_id)
+        else:
+            await update.message.reply_text('Подкастов нет :(')
         await update.message.reply_text("Введите ID пользователя, ID сообщения и Y для одобрения"
                                         "\nПример: 1111111111 123 Y"
                                         "\n\nЕсли подкаст не прошел модерацию, то опишите причину. Она будет отправлена пользователю"
                                         "\nПример: 1111111111 123 Маты это плохо")
+    else:
+        await update.message.reply_text("Комманда только для администратора")
     context.user_data['prev_command'] = 'admin_answ_p'
 
 
