@@ -9,7 +9,7 @@ BOT_USERNAME: Final = '@voiceeapp_bot'
 USERS_QUESTIONS = {}
 USERS_PODCASTS = {}
 bot = Bot(TOKEN)
-ADMINS = [462048028]
+ADMINS = [462048028,  585363683]
 
 
 # System functions
